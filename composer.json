@@ -1,0 +1,53 @@
+{
+    "name": "collegeman/botman-web-widget",
+    "version": "0.0.1",
+    "description": "",
+    "keywords": [
+        "collegeman",
+        "botman-web-widget"
+    ],
+    "homepage": "https://github.com/collegeman/botman-web-widget",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Aaron Collegeman",
+            "email": "aaroncollegeman@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        
+    },
+    "autoload": {
+        "psr-4": {
+            "Collegeman\\BotmanWebWidget\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Collegeman\\BotmanWebWidget\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Collegeman\\BotmanWebWidget\\ServiceProvider"
+            ],
+            "aliases": {
+                "BotmanWebWidget": "Collegeman\\BotmanWebWidget\\Facade"
+            }
+        }
+    }
+}
