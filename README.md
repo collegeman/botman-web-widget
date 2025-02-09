@@ -2,7 +2,7 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/collegeman/botman-web-widget.svg?style=flat-square)](https://packagist.org/packages/collegeman/botman-web-widget)
 [![Total Downloads](https://img.shields.io/packagist/dt/collegeman/botman-web-widget.svg?style=flat-square)](https://packagist.org/packages/collegeman/botman-web-widget)
-![GitHub Actions](https://github.com/collegeman/botman-web-widget/actions/workflows/main.yml/badge.svg)
+![GitHub Actions](https://github.com/collegeman/botman-web-widget/actions/workflows/build-assets.yml/badge.svg)
 
 This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
 
