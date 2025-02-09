@@ -2,8 +2,8 @@ name: Build Assets
 
 on:
   push:
-    tags:
-      - '*'
+    branches:
+      - master
 
 jobs:
   build:
@@ -11,8 +11,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
+
+      - name: Get version from composer.json
+        id: get_version
+        run: |
+          VERSION=$(jq -r '.version' composer.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -31,13 +35,11 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit built assets
+      - name: Create and push tag
         run: |
           git add public/build -f
-          git commit -m "Build assets for tag ${{ github.ref_name }}" || echo "No changes to commit"
-
-      - name: Push changes
-        run: |
-          git push origin HEAD:${{ github.ref_name }}
+          git commit -m "Build assets for version ${{ steps.get_version.outputs.version }}" || echo "No changes to commit"
+          git tag -a "v${{ steps.get_version.outputs.version }}" -m "Version ${{ steps.get_version.outputs.version }}"
+          git push origin "v${{ steps.get_version.outputs.version }}" --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
