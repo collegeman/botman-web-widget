@@ -1,4 +1,4 @@
-# Very short description of the package
+# A drop-in replacement for the BotMan Web Widget
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/collegeman/botman-web-widget.svg?style=flat-square)](https://packagist.org/packages/collegeman/botman-web-widget)
 [![Total Downloads](https://img.shields.io/packagist/dt/collegeman/botman-web-widget.svg?style=flat-square)](https://packagist.org/packages/collegeman/botman-web-widget)
