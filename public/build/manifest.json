@@ -1,0 +1,26 @@
+{
+  "resources/css/host.css": {
+    "file": "assets/host-BEPxJ3CV.js",
+    "name": "host",
+    "src": "resources/css/host.css",
+    "isEntry": true,
+    "css": [
+      "assets/host-B3SRh887.css"
+    ]
+  },
+  "resources/js/host.js": {
+    "file": "assets/host--8cc8gN2.js",
+    "name": "host",
+    "src": "resources/js/host.js",
+    "isEntry": true,
+    "imports": [
+      "resources/css/host.css"
+    ]
+  },
+  "resources/js/widget.js": {
+    "file": "assets/widget-SFYnSckJ.js",
+    "name": "widget",
+    "src": "resources/js/widget.js",
+    "isEntry": true
+  }
+}
