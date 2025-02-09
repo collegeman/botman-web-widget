@@ -5,7 +5,7 @@ namespace Collegeman\BotmanWebWidget;
 use Illuminate\Support\Facades\Facade as BaseFacade;
 
 /**
- * @see \Collegeman\BotmanWebWidget\Skeleton\SkeletonClass
+ * @see \Collegeman\BotmanWebWidget\Botman
  */
 class Facade extends BaseFacade
 {
@@ -16,6 +16,6 @@ class Facade extends BaseFacade
      */
     protected static function getFacadeAccessor()
     {
-        return 'botman-web-widget';
+        return Botman::class;
     }
 }
