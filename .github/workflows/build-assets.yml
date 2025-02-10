@@ -40,6 +40,6 @@ jobs:
           git add public/build -f
           git commit -m "Build assets for version ${{ steps.get_version.outputs.version }}" || echo "No changes to commit"
           git tag -a "v${{ steps.get_version.outputs.version }}" -m "Version ${{ steps.get_version.outputs.version }}"
-          git push origin "v${{ steps.get_version.outputs.version }}" --force
+          git push origin "v${{ steps.get_version.outputs.version }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

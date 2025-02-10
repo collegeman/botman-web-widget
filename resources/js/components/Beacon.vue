@@ -3,17 +3,17 @@
         class="block w-full rounded-full text-white p-4 focus:outline outline-4 outline-offset-2 outline-blue-500"
         :style="style"
         @click.prevent="toggleChat"
+        @keydown.escape.prevent="emitMessage('beacon.esc')"
     > 
-        <span v-if="open" v-html="config.icons.open"></span>
-        <span v-if="!open" v-html="config.icons.closed"></span>
+        <span v-if="$store.state.open" class="icon" v-html="config.icons.open"></span>
+        <span v-if="!$store.state.open" class="icon" v-html="config.icons.closed"></span>
         <span class="sr-only">Click to Chat</span>
     </button>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-
-let open = ref(false)
+import { emitMessage } from '../utils'
 
 let config = ref(window.botmanWidget)
 
@@ -26,27 +26,17 @@ let style = computed(() => {
 })
 
 let toggleChat = () => {
-    window.parent.postMessage({
-        type: 'botman-web-widget.beacon.click',
-        data: {
-            //
-        }
-    })
+    emitMessage('beacon.click')
 }
 
 window.addEventListener('message', (event) => {
-    if (event.data?.type === 'botman-web-widget.widget.toggle') {
-        open.value = event.data.data.open
+    if (event.data?.method === 'botman-web-widget.widget.toggle') {
+        $store.state.open = event.data.params.open
     }
 })
 </script>
 
 <style scoped>
-span svg {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
 :hover {
     background-color: none !important;
 }

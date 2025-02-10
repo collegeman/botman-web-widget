@@ -1,8 +1,16 @@
 <template>
     <div 
-        class="flex flex-col bg-gray-100 rounded-lg border border-gray-200 p-0 h-screen"
+        :class="[
+            'flex flex-col bg-gray-100 border-gray-200 p-0 h-screen',
+            {
+                'rounded-lg border': !$store.state.config.isMobile
+            }
+        ]"
     >
-        <ChatHeader />
+        <ChatHeader 
+            @back="onBack"
+            @close="emitMessage('chat.close')"
+        />
         <ChatBody>
             <ChatPage id="home" title="Start a conversation" description="What channel do you prefer?">
                 
@@ -14,26 +22,27 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-
+import { emitMessage } from '../utils'
 import ChatHeader from './ChatHeader.vue'
 import ChatBody from './ChatBody.vue'
 import ChatFooter from './ChatFooter.vue'
 import ChatPage from './ChatPage.vue'
 
-let open = ref(false)
-
 window.addEventListener('message', (event) => {
     if (event.data?.type === 'botman-web-widget.widget.toggle') {
-        open.value = event.data.data.open
+        $store.state.open = event.data.data.open
     }
 })
 
-onMounted(() => {
-    window.parent.postMessage({
-        type: 'botman-web-widget.chat.init',
-        data: {
-            //
-        }
-    }) 
+onMounted(() => emitMessage('chat.init'))
+
+const onBack = () => {
+    emitMessage('chat.back')
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        emitMessage('chat.esc')
+    }
 })
 </script>

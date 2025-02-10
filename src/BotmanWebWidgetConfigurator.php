@@ -10,13 +10,16 @@ class BotmanWebWidgetConfigurator
     {
         $this->config = array_merge([
             'icons' => [
-                'arrowLeft' => view('botman-web-widget::icons.arrow-left', [
+                'back' => view('botman-web-widget::icons.arrow-left', [
                     'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
                 ])->render(),
                 'open' => view('botman-web-widget::icons.chevron-down', [
                     'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
                 ])->render(),
                 'closed' => view('botman-web-widget::icons.comment', [
+                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                ])->render(),
+                'close' => view('botman-web-widget::icons.close', [
                     'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
                 ])->render(),
             ],
