@@ -3,9 +3,9 @@
 namespace Collegeman\BotmanWebWidget;
 
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
-class ServiceProvider extends BaseServiceProvider
+class BotmanWebWidgetServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -52,10 +52,10 @@ class ServiceProvider extends BaseServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'botman-web-widget');
 
         // Register the main class to use with the facade
-        $this->app->singleton(Botman::class, fn () => new Botman);
+        $this->app->singleton(BotmanWebWidgetConfigurator::class, fn () => new BotmanWebWidgetConfigurator(config('botman-web-widget')));
 
         Blade::directive('botman', function (string $expression) {
-            return "<?php echo \\Collegeman\\BotmanWebWidget\\Facade::widget({$expression}); ?>";
+            return "<?php echo BotmanWebWidget::widget({$expression}); ?>";
         });
     }
 }

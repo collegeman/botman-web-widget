@@ -1,51 +1,76 @@
-let config = window.botmanWidget || {
-    chatServer: '/botman',
-    frameEndpoint: '/botman/chat',
-    timeFormat: 'HH:MM',
-    dateTimeFormat: 'm/d/yy HH:MM',
-    title: 'BotMan Widget',
-    introMessage: null,
-    placeholderText: 'Send a message...',
-    displayMessageTime: true,
-    mainColor: '#408591',
-    bubbleBackground: '#408591',
-    bubbleAvatarUrl: null,
-    desktopHeight: 450,
-    desktopWidth: 370,
-    mobileHeight: '100%',
-    mobileWidth: 300,
-    videoHeight: 160,
-    aboutLink: 'https://github.com/collegeman/botman-web-widget',
-    aboutText: 'Powered by BotMan',
-    userId: null,
+let config = window.botmanWidget
+
+// load the chat iframe
+let chat = document.createElement('iframe')
+chat.src = config.frameEndpoint
+chat.style.position = 'fixed'
+chat.style.bottom = '120px'
+chat.style.right = '40px'
+chat.style.zIndex = '1200'
+chat.style.width = config.desktopWidth + 'px'
+chat.style.height = config.desktopHeight + 'px'
+chat.style.border = 'none'
+chat.style.display = 'none'
+document.body.appendChild(chat)
+
+let beacon = document.createElement('iframe')
+beacon.src = config.beaconEndpoint
+beacon.style.position = 'fixed'
+beacon.style.bottom = '40px'
+beacon.style.right = '40px'
+beacon.style.zIndex = '1000'
+beacon.style.width = (config.beaconSize + 15) + 'px'
+beacon.style.height = (config.beaconSize + 15) + 'px'
+beacon.style.border = 'none'
+document.body.appendChild(beacon)
+
+let open = false
+
+const botmanChatWidget = {
+    open () {
+        open = true
+        this.sendToggleMessage()
+    },
+    close () {
+        open = false
+        this.sendToggleMessage()
+    },
+    toggle () {
+        open = !open
+        this.sendToggleMessage()
+    },
+    sendToggleMessage () {
+        let message = {
+            type: 'botman-web-widget.widget.toggle',
+            data: {
+                open,
+            }
+        }
+        chat.contentWindow.postMessage(message)
+        beacon.contentWindow.postMessage(message)
+        chat.style.display = open ? 'block' : 'none'
+    },
+    say (text) {
+
+    },
+    whisper (text) {
+
+    },
+    sayAsBot (text) {
+        
+    }
 }
 
-// load the iframe
-let iframe = document.createElement('iframe')
-iframe.src = config.frameEndpoint
-iframe.style.position = 'fixed'
-iframe.style.bottom = '10px'
-iframe.style.right = '10px'
-iframe.style.zIndex = '1000'
-iframe.style.width = config.desktopWidth
-iframe.style.height = config.desktopHeight
-iframe.style.border = 'none'
-iframe.onload = () => iframe.contentWindow.postMessage(config, '*')
-document.body.appendChild(iframe)
+const initClient = () => {
+    window.botmanChatWidget = botmanChatWidget  
+}
 
-// listen for messages from the iframe
 window.addEventListener('message', (event) => {
-    console.log(event.data)
+    if (event.data?.type === 'botman-web-widget.chat.init') {
+        initClient()
+    }
+    if (event.data?.type === 'botman-web-widget.beacon.click') {
+        botmanChatWidget.toggle()
+    }
 })
 
-// create a chat badge
-let badge = document.createElement('div')
-badge.style.position = 'fixed'
-badge.style.bottom = '10px'
-badge.style.right = '10px'
-badge.style.zIndex = '1000'
-badge.style.backgroundColor = 'blue'
-badge.style.color = 'white'
-badge.style.padding = '10px'
-badge.style.borderRadius = '5px'
-document.body.appendChild(badge)

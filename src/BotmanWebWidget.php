@@ -2,12 +2,12 @@
 
 namespace Collegeman\BotmanWebWidget;
 
-use Illuminate\Support\Facades\Facade as BaseFacade;
+use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Collegeman\BotmanWebWidget\Botman
+ * @see \Collegeman\BotmanWebWidget\BotmanConfigurator
  */
-class Facade extends BaseFacade
+class BotmanWebWidget extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -16,6 +16,6 @@ class Facade extends BaseFacade
      */
     protected static function getFacadeAccessor()
     {
-        return Botman::class;
+        return BotmanWebWidgetConfigurator::class;
     }
 }

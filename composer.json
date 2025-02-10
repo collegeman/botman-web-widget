@@ -1,6 +1,6 @@
 {
     "name": "collegeman/botman-web-widget",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "",
     "keywords": [
         "collegeman",
@@ -42,10 +42,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Collegeman\\BotmanWebWidget\\ServiceProvider"
+                "Collegeman\\BotmanWebWidget\\BotmanWebWidgetServiceProvider"
             ],
             "aliases": {
-                "BotmanWebWidget": "Collegeman\\BotmanWebWidget\\Facade"
+                "BotmanWebWidget": "Collegeman\\BotmanWebWidget\\BotmanWebWidget"
             }
         }
     }

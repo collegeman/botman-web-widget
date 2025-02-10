@@ -11,6 +11,9 @@ return [
     // The location of your chat frame URL / route.
     'frameEndpoint' => '/botman/chat',
 
+    // The location of your chat beacon URL / route.
+    'beaconEndpoint' => '/botman/beacon',
+
     // Time format to use.
     'timeFormat' => 'HH:MM',
 
@@ -30,7 +33,7 @@ return [
     'displayMessageTime' => true,
 
     // The main color used in the widget header.
-    'mainColor' => '#408591',
+    'mainColor' => '#111111',
 
     // The color to use for the bubble background.
     'bubbleBackground' => '#408591',
@@ -39,7 +42,7 @@ return [
     'bubbleAvatarUrl' => null,
 
     // Height of the opened chat widget on desktops.
-    'desktopHeight' => 450,
+    'desktopHeight' => 550,
 
     // Width of the opened chat widget on desktops.
     'desktopWidth' => 370,
@@ -48,10 +51,22 @@ return [
     'mobileHeight' => '100%',
 
     // Width of the opened chat widget on mobile.
-    'mobileWidth' => 300,
+    'mobileWidth' => '100%',
+
+    // The color to use for the beacon badge.
+    'beaconColor' => '#111111',
+
+    // The color to use for the beacon badge when hovered.
+    'beaconColorHover' => '#2b7fff',
+
+    // The label color for the beacon
+    'beaconLabelColor' => '#ffffff',
 
     // Height to use for embedded videos.
     'videoHeight' => 160,
+
+    // The size of the beacon badge.
+    'beaconSize' => 60,
 
     // Link used for the "about" section in the widget footer.
     'aboutLink' => 'https://github.com/collegeman/botman-web-widget',

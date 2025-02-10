@@ -6,8 +6,9 @@ export default defineConfig({
     plugins: [
         laravel({
           input: [
-            'resources/css/host.css',
-            'resources/js/host.js',
+            'resources/css/beacon.css',
+            'resources/js/chat.js',
+            'resources/js/beacon.js',
             'resources/js/widget.js',
           ],
           refresh: true,
