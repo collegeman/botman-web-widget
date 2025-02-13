@@ -116,7 +116,8 @@ class BotManWebWidgetConfigurator implements BotManWebWidgetConfiguratorContract
         if (file_exists($manifest)) {
             $manifest = json_decode(file_get_contents($manifest), true);
             $asset = $manifest[$path];
-            return $this->asset('vendor/botman-web-widget/'.$asset['file']);
+            // TODO: don't rely on this helper function
+            return asset('vendor/botman-web-widget/'.$asset['file']);
         }
         throw new \Exception('Botman Web Widget Manifest file not found; run `php artisan vendor:publish --tag=botman-web-widget-assets` to generate it.');
     }
