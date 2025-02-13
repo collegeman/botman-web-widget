@@ -113,6 +113,13 @@ const botmanChatWidget = {
     },
     sayAsBot (text) {
         
+    },
+    api (text, interactive = false, attachment = null) {
+        callChatMethod('botman-web-widget.chat.api', {
+            text,
+            interactive,
+            attachment
+        })
     }
 }
 
@@ -136,6 +143,12 @@ window.addEventListener('message', (event) => {
     }
     if (event.data?.method === 'botman-web-widget.beacon.esc') {
         botmanChatWidget.close()
+    }
+    if (event.data?.method === 'botman-web-widget.chat.api.response') {
+        console.log(event.data.params)
+    }
+    if (event.data?.method === 'botman-web-widget.chat.api.error') {
+        console.log(event.data.params)
     }
 })
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace Collegeman\BotmanWebWidget;
+namespace Collegeman\BotManWebWidget;
 
 use Illuminate\Support\Facades\Facade;
-
+use Collegeman\BotManWebWidget\Contracts\BotManWebWidgetConfigurator as BotManWebWidgetConfiguratorContract;
 /**
  * @see \Collegeman\BotmanWebWidget\BotmanConfigurator
  */
-class BotmanWebWidget extends Facade
+class BotManWebWidget extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -16,6 +16,6 @@ class BotmanWebWidget extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return BotmanWebWidgetConfigurator::class;
+        return BotManWebWidgetConfiguratorContract::class;
     }
 }

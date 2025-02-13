@@ -1,11 +1,12 @@
 <?php
 
-namespace Collegeman\BotmanWebWidget;
+namespace Collegeman\BotManWebWidget;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Collegeman\BotManWebWidget\Contracts\BotManWebWidgetConfigurator as BotManWebWidgetConfiguratorContract;
 
-class BotmanWebWidgetServiceProvider extends ServiceProvider
+class BotManWebWidgetServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -52,10 +53,10 @@ class BotmanWebWidgetServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'botman-web-widget');
 
         // Register the main class to use with the facade
-        $this->app->singleton(BotmanWebWidgetConfigurator::class, fn () => new BotmanWebWidgetConfigurator(config('botman-web-widget')));
+        $this->app->singleton(BotManWebWidgetConfiguratorContract::class, fn () => new BotManWebWidgetConfigurator($this->app, config('botman-web-widget')));
 
         Blade::directive('botman', function (string $expression) {
-            return "<?php echo BotmanWebWidget::widget({$expression}); ?>";
+            return "<?php echo BotManWebWidget::widget({$expression}); ?>";
         });
     }
 }

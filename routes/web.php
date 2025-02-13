@@ -1,18 +1,12 @@
 <?php
+
+use Collegeman\BotManWebWidget\BotManWebWidget;
 use Illuminate\Http\Request;
 
-Route::get(config('botman-web-widget.frameEndpoint'), function (Request $request) {
-    return view('botman-web-widget::chat', [
-        'config' => [
-            'isMobile' => $request->mobile
-        ]
-    ]);
+Route::get(BotManWebWidget::config('frameEndpoint'), function (Request $request) {
+    return BotManWebWidget::view('chat', ['config' => ['isMobile' => $request->isMobile]]);
 })->name('botman-web-widget.chat');
 
-Route::get(config('botman-web-widget.beaconEndpoint'), function (Request $request) {
-    return view('botman-web-widget::beacon', [
-        'config' => [
-            'isMobile' => $request->mobile
-        ]
-    ]);
+Route::get(BotManWebWidget::config('beaconEndpoint'), function (Request $request) {
+    return BotManWebWidget::view('beacon', ['config' => ['isMobile' => $request->isMobile]]);
 })->name('botman-web-widget.beacon');

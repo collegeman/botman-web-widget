@@ -1,29 +1,89 @@
 <?php
 
-namespace Collegeman\BotmanWebWidget;
+namespace Collegeman\BotManWebWidget;
 
-class BotmanWebWidgetConfigurator
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Illuminate\Contracts\View\Factory as ViewFactory;
+use Illuminate\Contracts\View\View;
+use Collegeman\BotManWebWidget\Contracts\BotManWebWidgetConfigurator as BotManWebWidgetConfiguratorContract;
+
+class BotManWebWidgetConfigurator implements BotManWebWidgetConfiguratorContract
 {
+    protected Application $app;
+
     protected array $config;
 
-    public function __construct(array $config)
+    public function __construct(Application $app, array $config)
     {
+        $this->app = $app;
+
         $this->config = array_merge([
             'icons' => [
-                'back' => view('botman-web-widget::icons.arrow-left', [
+                'back' => $this->render('icons.arrow-left', [
                     'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
-                ])->render(),
-                'open' => view('botman-web-widget::icons.chevron-down', [
+                ]),
+                'open' => $this->render('icons.chevron-down', [
                     'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
-                ])->render(),
-                'closed' => view('botman-web-widget::icons.comment', [
+                ]),
+                'closed' => $this->render('icons.comment', [
                     'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
-                ])->render(),
-                'close' => view('botman-web-widget::icons.close', [
+                ]),
+                'close' => $this->render('icons.close', [
                     'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
-                ])->render(),
+                ]),
             ],
-        ], $config);
+        ], $config, [
+            'userId' => self::userId(),
+            'echoChannel' => self::echoChannel($config),
+            'echoEventName' => self::echoEventName($config),
+        ]);
+    }
+
+    protected function echoChannel(array $config = []): string
+    {
+        $echoChannelConfig = data_get($config, 'echoChannel');
+
+        if (is_callable($echoChannelConfig)) {
+            return $echoChannelConfig($this->userId());
+        } else {
+            return $echoChannelConfig;
+        }
+    }
+
+    protected function echoEventName(array $config = []): string
+    {
+        return basename(data_get($config, 'echoEventClass'));
+    }
+
+    public function userId(): string
+    {
+        return Auth::id() ?? Str::uuid();
+    }
+
+    /**
+     * Get the evaluated view contents for the given view.
+     *
+     * @param  string|null  $view
+     * @param  \Illuminate\Contracts\Support\Arrayable|array  $data
+     * @param  array  $mergeData
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+     */
+    public function view($view = null, $data = [], $mergeData = []): View|ViewFactory
+    {
+        $factory = $this->app->make(ViewFactory::class);
+
+        if (func_num_args() === 0) {
+            return $factory;
+        }
+
+        return $factory->make('botman-web-widget::' . $view, $data, $mergeData);
+    }
+
+    protected function render($view, $data = [], $mergeData = []): string
+    {
+        return $this->view($view, $data, $mergeData)->render();
     }
 
     public function config($name = null, $value = null): mixed
@@ -40,28 +100,28 @@ class BotmanWebWidgetConfigurator
         return $this->config;
     }
 
-    public function widget()
+    public function widget(): string
     {
-        return view('botman-web-widget::widget', ['config' => $this->config])->render();
+        return $this->render('widget', ['config' => $this->config]);
     }
 
-    public function asset($path)
+    public function asset($path): string
     {
         return $this->hotAsset($path) ?: $this->buildAsset($path);
     }
 
-    public function buildAsset($path)
+    protected function buildAsset($path): string
     {
-        $manifest = public_path('vendor/botman-web-widget/manifest.json');
+        $manifest = $this->app->publicPath('vendor/botman-web-widget/manifest.json');
         if (file_exists($manifest)) {
             $manifest = json_decode(file_get_contents($manifest), true);
             $asset = $manifest[$path];
-            return asset('vendor/botman-web-widget/'.$asset['file']);
+            return $this->asset('vendor/botman-web-widget/'.$asset['file']);
         }
         throw new \Exception('Botman Web Widget Manifest file not found; run `php artisan vendor:publish --tag=botman-web-widget-assets` to generate it.');
     }
 
-    public function hotAsset($path)
+    protected function hotAsset($path): string
     {
         $hot = __DIR__.'/../public/hot';
         if (file_exists($hot)) {

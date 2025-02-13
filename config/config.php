@@ -4,6 +4,8 @@
  * You can place your custom package configuration in here.
  */
 
+use Collegeman\BotManWebWidget\Events\BotManMessageCreated;
+
 return [
     // The URL of the BotMan route / server to use.
     'chatServer' => '/botman',
@@ -74,6 +76,15 @@ return [
     // Text used for the "about" section in the widget footer.
     'aboutText' => 'Powered by BotMan',
 
-    // Optional user-id that get's sent to BotMan. If no ID is given, a random id will be generated on each page-view.
-    'userId' => null,
+    // Use Laravel Echo to listen for BotManMessageCreated events
+    'useEcho' => false,
+
+    // The channel to listen for BotManMessageCreated events on
+    'echoChannel' => fn (string $userId) => "botman.messages.{$userId}",
+
+    // Laravel Echo configuration @see https://laravel.com/docs/11.x/broadcasting
+    'echoConfiguration' => [],
+
+    // The event class that will be used for broadcasting BotMan messages
+    'echoEventClass' => BotManMessageCreated::class,
 ];
