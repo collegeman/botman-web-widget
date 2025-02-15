@@ -24,15 +24,15 @@ class BotManWebWidgetServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../config/config.php' => config_path('botman-web-widget.php'),
-            ], 'botman-web-widget-config');
+            ], 'config');
 
             $this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/botman-web-widget'),
-            ], 'botman-web-widget-views');
+            ], 'views');
 
             $this->publishes([
                 __DIR__.'/../public/build' => public_path('vendor/botman-web-widget'),
-            ], 'botman-web-widget-assets');
+            ], 'assets');
 
             // Publishing the translation files.
             /*$this->publishes([

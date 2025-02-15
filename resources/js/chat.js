@@ -5,7 +5,7 @@ import Chat from './components/Chat.vue'
 const app = createApp(Chat)
 
 // add default page
-if (!window.botmanWidget.pages || !window.botmanWidget.pages.length) {
+if (!window.botmanWidget.pages?.length) {
     window.botmanWidget.pages = [
         {
             id: 'chat',
