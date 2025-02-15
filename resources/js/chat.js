@@ -1,34 +1,76 @@
-import { createApp } from 'vue'
+import { createApp, nextTick } from 'vue'
 import { createStore } from 'vuex'
 import Chat from './components/Chat.vue'
 
 const app = createApp(Chat)
 
+// add default page
+if (!window.botmanWidget.pages || !window.botmanWidget.pages.length) {
+    window.botmanWidget.pages = [
+        {
+            id: 'chat',
+            title: 'Chat',
+            buttonTitle: 'Chat with our bot',
+            buttonDescription: 'Available to help 24/7',
+            icon: window.botmanWidget.icons.bot,
+            introMessage: window.botmanWidget.introMessage,
+            chatServer: window.botmanWidget.chatServer,
+        }
+    ]
+}
+
+window.botmanWidget.pages.forEach(page => page.pristine = true)
+
 const store = createStore({
     state: {
         config: window.botmanWidget,
         open: false,
-        title: 'Chat',
-        messages: [],
+        title: null,
+        page: 'home',
+        messages: window.botmanWidget.pages.reduce((messages, page) => { messages[page.id] = []; return messages }, {}),
         conversation: null,
+        input: {
+            text: '',
+            attachment: null,
+        },
+        showChatInput: false,
+    },
+    getters: {
+        chatServer: (state) => (pageId) => {
+            return state.config.pages.find(page => page.id === pageId)?.chatServer || state.config.chatServer
+        },
+        showBackButton(state) {
+            return state.page !== 'home'
+        },
+        pristine: (state) => (pageId) => {
+            return state.config.pages.find(page => page.id === pageId).pristine
+        },
+        introMessage: (state) => (pageId) => {
+            return state.config.pages.find(page => page.id === pageId).introMessage
+        },
     },
     mutations: {
-        setTitle(state, title) {
-            state.title = title
+        resetInput(state) {
+            state.input.text = ''
+            state.input.attachment = null
         },
-        setOpen(state, open) {
-            state.open = open
+        pristine(state, { pageId, value }) {
+            state.config.pages.find(page => page.id === pageId).pristine = value
         },
-        addMessage(state, message) {
-            state.messages.push(message)
+        page(state, pageId) {
+            state.page = pageId
+            const page = state.config.pages.find(page => page.id === pageId)
+            if (page.pristine) {
+                page.pristine = false
+                if (page.introMessage) {
+                    nextTick(() => setTimeout(() => state.messages[page.id].push({ text: page.introMessage, from: 'chatbot' }), 500))
+                }
+            }
         },
-        setMessages(state, messages) {
-            state.messages = messages
+        messages(state, { message, pageId }) {
+            state.messages[pageId || state.page].push(typeof message === 'string' ? { text: message } : message)
         },
-        setConversation(state, conversation) {
-            state.conversation = conversation
-        },
-    }
+    },
 })
 
 app.use(store)

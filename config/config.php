@@ -25,6 +25,9 @@ return [
     // The title to use in the widget.
     'title' => env('BOTMAN_WIDGET_TITLE', env('APP_NAME', 'BotMan Widget')),
 
+    // Whether the chat widget should be opened automatically when the page loads
+    'openByDefault' => false,
+
     // This is a welcome message that every new user sees when the widget is opened for the first time.
     'introMessage' => null,
 
@@ -44,10 +47,10 @@ return [
     'bubbleAvatarUrl' => null,
 
     // Height of the opened chat widget on desktops.
-    'desktopHeight' => 550,
+    'desktopHeight' => 650,
 
     // Width of the opened chat widget on desktops.
-    'desktopWidth' => 370,
+    'desktopWidth' => 375,
 
     // Height of the opened chat widget on mobile.
     'mobileHeight' => '100%',

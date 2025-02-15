@@ -105,17 +105,25 @@ const botmanChatWidget = {
         open = !open
         onToggle()
     },
-    say (text) {
-
+    say (message) {
+        callChatMethod('botman-web-widget.chat.say', typeof message !== 'object' ? { text: message } : message)
     },
-    whisper (text) {
-
+    writeToMessages (message) {
+        callChatMethod('botman-web-widget.chat.writeToMessages',  typeof message !== 'object' ? { text: message } : message)
     },
-    sayAsBot (text) {
-        
+    whisper (message) {
+        callChatMethod('botman-web-widget.chat.whisper',  typeof message !== 'object' ? { text: message } : message)
+    },
+    sayAsBot (message) {
+        callChatMethod('botman-web-widget.chat.sayAsBot',  typeof message !== 'object' ? { text: message } : message)
+    },
+    page (id) {
+        callChatMethod('botman-web-widget.chat.page', {
+            id
+        })
     },
     api (text, interactive = false, attachment = null) {
-        callChatMethod('botman-web-widget.chat.api', {
+        callChatMethod('botman-web-widget.chat.api', typeof text === 'object' ? text : {
             text,
             interactive,
             attachment
@@ -124,7 +132,11 @@ const botmanChatWidget = {
 }
 
 const initClient = () => {
-    window.botmanChatWidget = botmanChatWidget  
+    window.botmanChatWidget = botmanChatWidget 
+    
+    if (config.openByDefault) {
+        botmanChatWidget.open()
+    }
 }
 
 window.addEventListener('message', (event) => {

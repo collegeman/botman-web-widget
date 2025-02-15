@@ -24,14 +24,26 @@ class BotManWebWidgetConfigurator implements BotManWebWidgetConfiguratorContract
                 'back' => $this->render('icons.arrow-left', [
                     'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
                 ]),
-                'open' => $this->render('icons.chevron-down', [
+                'bot' => $this->render('icons.bot', [
+                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                ]),
+                'close' => $this->render('icons.close', [
                     'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
                 ]),
                 'closed' => $this->render('icons.comment', [
                     'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
                 ]),
-                'close' => $this->render('icons.close', [
+                'email' => $this->render('icons.email', [
                     'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                ]),
+                'open' => $this->render('icons.chevron-down', [
+                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                ]),
+                'search' => $this->render('icons.search', [
+                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                ]),
+                'user' => $this->render('icons.user', [
+                    'stroke' => '#888888',
                 ]),
             ],
         ], $config, [

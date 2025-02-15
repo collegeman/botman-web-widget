@@ -12,7 +12,7 @@ export const emitMessage = (method, params = {}) => {
     })
 }
 
-export const api = (text, interactive = false, attachment = null, perMessageCallback, callback, errorHandler) => {
+export const api = ({server = window.botmanWidget.chatServer, text, interactive = false, attachment = null, perMessageCallback, callback, errorHandler}) => {
     let data = new FormData()
     
     const postData = {
@@ -20,12 +20,12 @@ export const api = (text, interactive = false, attachment = null, perMessageCall
         userId: window.botmanWidget.userId,
         message: text,
         attachment: attachment,
-        interactive: interactive ? '1' : '0'
+        interactive: interactive ? '1' : '0',
     }
 
     Object.keys(postData).forEach(key => data.append(key, postData[key]))
 
-    client().post(window.botmanWidget.chatServer, data).then(response => {
+    client().post(server, data).then(response => {
         const messages = response.data.messages || [];
 
         if (perMessageCallback) {

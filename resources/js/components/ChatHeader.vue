@@ -11,14 +11,14 @@
         }"
     >
         <div 
-            class="flex-grow text-white text-sm text-center cursor-pointer"
-            @click.prevent="emit('close')"
+            class="flex-grow text-white text-sm text-center cursor-pointer min-h-5"
         >
             <slot name="content">
-                {{ $store.state.title }}
+                <span>{{ $store.state.title }}</span>
             </slot>
         </div>
-        <button 
+        <button
+            v-if="$store.getters.showBackButton" 
             class="absolute left-2 top-1/2 -translate-y-1/2 outline-none text-white text-sm"
             @click.prevent="emit('back')"
         >
@@ -26,12 +26,7 @@
             <span class="sr-only">Back</span>
         </button>
         <button 
-            :class="[
-                'absolute right-2 top-1/2 -translate-y-1/2 outline-none text-white text-sm',
-                {
-                    'hidden': !$store.state.config.isMobile
-                }
-            ]"
+            class="absolute right-2 top-1/2 -translate-y-1/2 outline-none text-white text-sm"
             @click.prevent="emit('close')"
         >
             <span class="icon block h-4 w-4" v-html="$store.state.config.icons.close"></span>
