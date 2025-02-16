@@ -18,7 +18,7 @@ class BotManWebWidgetServiceProvider extends ServiceProvider
          */
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'botman-web-widget');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'botman-web-widget');
-        // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
 
         if ($this->app->runningInConsole()) {
