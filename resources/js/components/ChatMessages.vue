@@ -6,6 +6,11 @@
                 :key="message.id"
                 :message="message"
             />
+            <ChatMessage
+                v-if="$store.state.loading"
+                :loading="true"
+                :message="{ from: 'chatbot' }"
+            />
         </slot>
     </div>
 </template>

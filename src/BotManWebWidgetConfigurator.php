@@ -43,7 +43,7 @@ class BotManWebWidgetConfigurator implements BotManWebWidgetConfiguratorContract
                     'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
                 ]),
                 'user' => $this->render('icons.user', [
-                    'stroke' => '#888888',
+                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
                 ]),
             ],
         ], $config, [

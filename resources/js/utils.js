@@ -36,4 +36,14 @@ export const api = ({server = window.botmanWidget.chatServer, text, interactive 
             callback(response.data);
         }
     }).catch(errorHandler)
-}   
+} 
+
+export const MessageTypes = {
+    TypingIndicator: 'typing_indicator',
+    Text: 'text',
+    List: 'list',
+    Image: 'image',
+    Audio: 'audio',
+    Video: 'video',
+    File: 'file',
+}

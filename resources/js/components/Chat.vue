@@ -204,6 +204,8 @@ const whisper = (message) => {
 
 const say = (message, showMessage = true) => {
     const pageId = store.state.page
+    store.commit('loading', true)
+    let timeout = 0
     api({
         ...{
             chatServer: store.getters.chatServer(pageId),
@@ -211,12 +213,29 @@ const say = (message, showMessage = true) => {
         ...message,
         ...{
             perMessageCallback: (message) => {
-                writeToMessages(message, pageId)
+                writeToMessages({
+                    ...message,
+                    ...{
+                        from: 'chatbot',
+                        timeout: timeout += (message.timeout || 0),
+                    }
+                }, pageId)
             }, 
+            callback: (response) => {
+                store.commit('loading', false)
+                if (message.callback) {
+                    message.callback(response)
+                }
+            }
         }
     })
     if (showMessage) {
-        writeToMessages(message, pageId)
+        writeToMessages({
+            ...message,
+            ...{
+                from: 'visitor',
+            }
+        }, pageId)
     }
 }
 
@@ -256,7 +275,10 @@ window.addEventListener('message', (event) => {
     }
 })
 
-onMounted(() => emitMessage('chat.init'))
+onMounted(() => {
+    emitMessage('chat.init')
+    store.commit('page', store.state.config.defaultPage || 'home')
+})
 
 const onBack = () => {
     emitMessage('chat.back')

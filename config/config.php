@@ -26,7 +26,10 @@ return [
     'title' => env('BOTMAN_WIDGET_TITLE', env('APP_NAME', 'BotMan Widget')),
 
     // Whether the chat widget should be opened automatically when the page loads
-    'openByDefault' => false,
+    'openByDefault' => true,
+
+    // The default chat page to open when the widget is opened
+    'defaultPage' => 'home',
 
     // This is a welcome message that every new user sees when the widget is opened for the first time.
     'introMessage' => null,

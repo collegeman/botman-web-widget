@@ -4,36 +4,39 @@ import Chat from './components/Chat.vue'
 
 const app = createApp(Chat)
 
+const config = window.botmanWidget
+
 // add default page
-if (!window.botmanWidget.pages?.length) {
-    window.botmanWidget.pages = [
+if (!config.pages?.length) {
+    config.pages = [
         {
             id: 'chat',
             title: 'Chat',
             buttonTitle: 'Chat with our bot',
             buttonDescription: 'Available to help 24/7',
-            icon: window.botmanWidget.icons.bot,
-            introMessage: window.botmanWidget.introMessage,
-            chatServer: window.botmanWidget.chatServer,
+            icon: config.icons.bot,
+            introMessage: config.introMessage,
+            chatServer: config.chatServer,
         }
     ]
 }
 
-window.botmanWidget.pages.forEach(page => page.pristine = true)
+config.pages.forEach(page => page.pristine = true)
 
 const store = createStore({
     state: {
-        config: window.botmanWidget,
+        config,
         open: false,
         title: null,
-        page: 'home',
-        messages: window.botmanWidget.pages.reduce((messages, page) => { messages[page.id] = []; return messages }, {}),
+        page: null,
+        messages: config.pages.reduce((messages, page) => { messages[page.id] = []; return messages }, {}),
         conversation: null,
         input: {
             text: '',
             attachment: null,
         },
         showChatInput: false,
+        loading: false,
     },
     getters: {
         chatServer: (state) => (pageId) => {
@@ -60,7 +63,7 @@ const store = createStore({
         page(state, pageId) {
             state.page = pageId
             const page = state.config.pages.find(page => page.id === pageId)
-            if (page.pristine) {
+            if (page?.pristine) {
                 page.pristine = false
                 if (page.introMessage) {
                     nextTick(() => setTimeout(() => state.messages[page.id].push({ text: page.introMessage, from: 'chatbot' }), 500))
@@ -69,6 +72,9 @@ const store = createStore({
         },
         messages(state, { message, pageId }) {
             state.messages[pageId || state.page].push(typeof message === 'string' ? { text: message } : message)
+        },
+        loading(state, value) {
+            state.loading = value
         },
     },
 })
