@@ -11,9 +11,12 @@
             @back="onBack"
             @close="emitMessage('chat.close')"
         />
-        <ChatBody>
+        <ChatBody
+            ref="body"
+        >
             <ChatPage 
                 v-if="$store.state.page === 'home'"
+                id="home"
             >
                 <template #heading>
                     <div class="pt-8 pb-4" :style="{ backgroundColor: $store.state.config.mainColor }">
@@ -118,11 +121,13 @@
             >
                 <ChatPage 
                     :key="page.id"
+                    :id="page.id"
                     v-if="$store.state.page === page.id"
                     :title="page.title"
                 >
                     <ChatMessages 
                         :pageId="page.id"
+                        @message="onMessage"
                     />
                 </ChatPage>
             </template>
@@ -171,7 +176,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useStore } from 'vuex'
 import { emitMessage, api } from '../utils'
 import ChatHeader from './ChatHeader.vue'
@@ -183,6 +188,7 @@ import ChatPage from './ChatPage.vue'
 import ChatPageButton from './ChatPageButton.vue'
 
 const store = useStore()
+const body = ref(null)
 
 const writeToMessages = (message, pageId = null) => {
     store.commit('messages', { message, pageId })
@@ -204,7 +210,7 @@ const whisper = (message) => {
 
 const say = (message, showMessage = true) => {
     const pageId = store.state.page
-    store.commit('loading', true)
+    const waitBeforeChangingLoadingState = setTimeout(() => store.commit('loading', true), 300)
     let timeout = 0
     api({
         ...{
@@ -222,6 +228,7 @@ const say = (message, showMessage = true) => {
                 }, pageId)
             }, 
             callback: (response) => {
+                clearTimeout(waitBeforeChangingLoadingState)
                 store.commit('loading', false)
                 if (message.callback) {
                     message.callback(response)
@@ -238,6 +245,40 @@ const say = (message, showMessage = true) => {
         }, pageId)
     }
 }
+
+onMounted(() => {
+    emitMessage('chat.init')
+    store.commit('page', store.state.config.defaultPage || 'home')
+})
+
+const onBack = () => {
+    emitMessage('chat.back')
+    store.commit('page', 'home')
+}
+
+const onPageButtonClick = (pageId) => {
+    store.commit('page', pageId)
+}
+
+const onChatInputSubmit = (message) => {
+    if (!store.state.loading && !store.state.waiting) {
+        say({ ...store.state.input })
+        store.commit('resetInput')
+    }
+}
+
+const onMessage = (message, $el) => {
+    console.log(message)
+    nextTick(() => {
+        body.value.$el.scrollTop = $el.scrollTop + 100
+    })
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        emitMessage('chat.esc')
+    }
+})
 
 window.addEventListener('message', (event) => {
     if (event.data?.method === 'botman-web-widget.widget.toggle') {
@@ -272,31 +313,6 @@ window.addEventListener('message', (event) => {
     }
     if (event.data?.method === 'botman-web-widget.chat.writeToMessages') {
         writeToMessages(event.data.params)
-    }
-})
-
-onMounted(() => {
-    emitMessage('chat.init')
-    store.commit('page', store.state.config.defaultPage || 'home')
-})
-
-const onBack = () => {
-    emitMessage('chat.back')
-    store.commit('page', 'home')
-}
-
-const onPageButtonClick = (pageId) => {
-    store.commit('page', pageId)
-}
-
-const onChatInputSubmit = (message) => {
-    say({ ...store.state.input })
-    store.commit('resetInput')
-}
-
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        emitMessage('chat.esc')
     }
 })
 </script>

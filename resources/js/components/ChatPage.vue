@@ -10,12 +10,14 @@
             ]"
             :style="{ borderTopColor: $store.state.config.mainColor }"
         >
-            <div :class="[
-                'relative w-full',
-                {
-                    '-top-[50px]': $slots.heading
-                },
-            ]">
+            <div 
+                :class="[
+                    'relative w-full',
+                    {
+                        '-top-[50px]': $slots.heading
+                    },
+                ]"
+            >
                 <slot></slot>
             </div>
         </div>
@@ -29,6 +31,10 @@ import { useStore } from 'vuex'
 const store = useStore()
 
 const props = defineProps({
+    id: {
+        type: String,
+        required: true,
+    },
     title: {
         type: String,
         default: null,

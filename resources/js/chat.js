@@ -1,6 +1,7 @@
 import { createApp, nextTick } from 'vue'
 import { createStore } from 'vuex'
 import Chat from './components/Chat.vue'
+import { v4 as uuidv4 } from 'uuid'
 
 const app = createApp(Chat)
 
@@ -37,6 +38,7 @@ const store = createStore({
         },
         showChatInput: false,
         loading: false,
+        waiting: false,
     },
     getters: {
         chatServer: (state) => (pageId) => {
@@ -66,15 +68,30 @@ const store = createStore({
             if (page?.pristine) {
                 page.pristine = false
                 if (page.introMessage) {
-                    nextTick(() => setTimeout(() => state.messages[page.id].push({ text: page.introMessage, from: 'chatbot' }), 500))
+                    nextTick(() => setTimeout(() => state.messages[page.id].push({ 
+                        id: uuidv4(),
+                        time: new Date().getTime(),
+                        text: page.introMessage, 
+                        from: 'chatbot' 
+                    }), 500))
                 }
             }
         },
         messages(state, { message, pageId }) {
-            state.messages[pageId || state.page].push(typeof message === 'string' ? { text: message } : message)
+            let data = typeof message === 'string' ? { text: message } : message
+            if (typeof data.id === "undefined") {
+                data.id = uuidv4()
+            }
+            if (typeof data.time === "undefined") {
+                data.time = new Date().getTime()
+            }
+            state.messages[pageId || state.page].push(data)
         },
         loading(state, value) {
             state.loading = value
+        },
+        waiting(state, value) {
+            state.waiting = value
         },
     },
 })
