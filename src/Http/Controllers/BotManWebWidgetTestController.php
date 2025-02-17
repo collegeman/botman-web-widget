@@ -39,6 +39,10 @@ class BotManWebWidgetTestController
             $bot->startConversation(new TestConversation());
         });
 
+        $botman->hears("llphant:stop", function(BotMan $bot) {
+            $bot->reply("You are no longer chatting with the LLM.");
+        });
+
         $botman->fallback(function (BotMan $bot) {
             $responses = [
                 "I'm not quite sure what you mean. Could you rephrase that?",

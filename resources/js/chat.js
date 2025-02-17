@@ -39,6 +39,7 @@ const store = createStore({
         showChatInput: false,
         loading: false,
         waiting: false,
+        error: false,
     },
     getters: {
         chatServer: (state) => (pageId) => {
@@ -92,6 +93,9 @@ const store = createStore({
         },
         waiting(state, value) {
             state.waiting = value
+        },
+        error(state, value) {
+            state.error = value
         },
     },
 })

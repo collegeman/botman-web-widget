@@ -13,6 +13,11 @@
                 :message="{ from: 'chatbot' }"
                 @message="onMessage"
             />
+            <ChatMessage
+                v-if="$store.state.error"
+                :message="{ from: 'chatbot', text: '<span class=\'text-red-500\'>Oops! Please try again.</span>' }"
+                @message="onMessage"
+            />
         </slot>
     </ul>
 </template>

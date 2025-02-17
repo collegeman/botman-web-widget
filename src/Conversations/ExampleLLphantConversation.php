@@ -37,7 +37,7 @@ class ExampleLLPhantConversation extends Conversation
         ];
     }
 
-    public function stopConversation(IncomingMessage $answer)
+    public function stopsConversation(IncomingMessage $answer)
     {
         return $answer->getText() === 'llphant:stop';
     }

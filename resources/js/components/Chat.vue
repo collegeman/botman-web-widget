@@ -210,6 +210,7 @@ const whisper = (message) => {
 
 const say = (message, showMessage = true) => {
     const pageId = store.state.page
+    store.commit('error', false)
     const waitBeforeChangingLoadingState = setTimeout(() => store.commit('loading', true), 300)
     let timeout = 0
     api({
@@ -232,6 +233,17 @@ const say = (message, showMessage = true) => {
                 store.commit('loading', false)
                 if (message.callback) {
                     message.callback(response)
+                }
+            },
+            errorHandler: (error) => {
+                clearTimeout(waitBeforeChangingLoadingState)
+                store.commit('loading', false)
+                store.commit('error', error)
+                if (message.errorHandler) {
+                    message.errorHandler(error)
+                }
+                if (message.from === 'visitor' && showMessage) {
+                    store.state.input = message
                 }
             }
         }
