@@ -1,0 +1,38 @@
+{
+  "__plugin-vue_export-helper-D__CIbsV.js": {
+    "file": "assets/_plugin-vue_export-helper-D__CIbsV.js",
+    "name": "_plugin-vue_export-helper"
+  },
+  "resources/css/common.css": {
+    "file": "assets/common-yWunQKBu.css",
+    "src": "resources/css/common.css",
+    "isEntry": true
+  },
+  "resources/js/beacon.js": {
+    "file": "assets/beacon-C1FZcfyz.js",
+    "name": "beacon",
+    "src": "resources/js/beacon.js",
+    "isEntry": true,
+    "imports": [
+      "__plugin-vue_export-helper-D__CIbsV.js"
+    ],
+    "css": [
+      "assets/beacon-Bvn2-nCZ.css"
+    ]
+  },
+  "resources/js/chat.js": {
+    "file": "assets/chat-BLuTvNg_.js",
+    "name": "chat",
+    "src": "resources/js/chat.js",
+    "isEntry": true,
+    "imports": [
+      "__plugin-vue_export-helper-D__CIbsV.js"
+    ]
+  },
+  "resources/js/widget.js": {
+    "file": "assets/widget-DzSPcAYc.js",
+    "name": "widget",
+    "src": "resources/js/widget.js",
+    "isEntry": true
+  }
+}
