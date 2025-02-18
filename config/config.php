@@ -5,8 +5,24 @@
  */
 
 use Collegeman\BotManWebWidget\Events\BotManMessageCreated;
+use Collegeman\BotManWebWidget\Models\Conversation;
+use Collegeman\BotManWebWidget\Models\Message;
 
 return [
+
+    // Database names, when using optional Conversations logging
+    'database' => [
+
+        'conversations_table_name' => 'botman_conversations',
+
+        'conversations_model' => Conversation::class,
+
+        'messages_table_name' => 'botman_messages',
+
+        'messages_model' => Message::class,
+        
+    ],
+
     // The URL of the BotMan route / server to use.
     'chatServer' => '/botman',
 
