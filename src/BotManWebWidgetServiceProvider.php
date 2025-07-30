@@ -24,15 +24,15 @@ class BotManWebWidgetServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../config/config.php' => config_path('botman-web-widget.php'),
-            ], 'config');
+            ], 'botman-web-widget-config');
 
             $this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/botman-web-widget'),
-            ], 'views');
+            ], 'botman-web-widget-views');
 
             $this->publishes([
                 __DIR__.'/../public/build' => public_path('vendor/botman-web-widget'),
-            ], 'assets');
+            ], 'botman-web-widget-assets');
 
             // Publishing the translation files.
             /*$this->publishes([
@@ -53,7 +53,7 @@ class BotManWebWidgetServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'botman-web-widget');
 
         // Register the main class to use with the facade
-        $this->app->singleton(BotManWebWidgetConfiguratorContract::class, fn () => new BotManWebWidgetConfigurator($this->app, config('botman-web-widget')));
+        $this->app->singleton(BotManWebWidgetConfiguratorContract::class, fn () => new BotManWebWidgetConfigurator($this->app));
 
         Blade::directive('botman', function (string $expression) {
             return "<?php echo BotManWebWidget::widget({$expression}); ?>";

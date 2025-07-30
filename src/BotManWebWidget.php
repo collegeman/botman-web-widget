@@ -4,6 +4,7 @@ namespace Collegeman\BotManWebWidget;
 
 use Illuminate\Support\Facades\Facade;
 use Collegeman\BotManWebWidget\Contracts\BotManWebWidgetConfigurator as BotManWebWidgetConfiguratorContract;
+
 /**
  * @see \Collegeman\BotmanWebWidget\BotmanConfigurator
  */

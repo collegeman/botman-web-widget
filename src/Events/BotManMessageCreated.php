@@ -42,7 +42,7 @@ class BotManMessageCreated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel(BotManWebWidget::config('echoChannel')),
+            new PrivateChannel(BotManWebWidget::echoChannel()),
         ];
     }
 

@@ -9,7 +9,7 @@
 <body class="relative flex flex-col p-0 justify-center items-center h-screen">
     <div id="beacon" v-cloak></div>
     <script>
-        window.botmanWidget = @json(array_merge(BotManWebWidget::config(), $config))
+        window.botmanWidget = @json(BotManWebWidget::getClientConfig($config))
     </script>
     <script type="module" src="{{ BotManWebWidget::asset('resources/js/beacon.js') }}"></script>
 </body>

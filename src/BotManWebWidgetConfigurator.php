@@ -15,47 +15,14 @@ class BotManWebWidgetConfigurator implements BotManWebWidgetConfiguratorContract
 
     protected array $config;
 
-    public function __construct(Application $app, array $config)
+    public function __construct(Application $app)
     {
         $this->app = $app;
-
-        $this->config = array_merge([
-            'icons' => [
-                'back' => $this->render('icons.arrow-left', [
-                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
-                ]),
-                'bot' => $this->render('icons.bot', [
-                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
-                ]),
-                'close' => $this->render('icons.close', [
-                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
-                ]),
-                'closed' => $this->render('icons.comment', [
-                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
-                ]),
-                'email' => $this->render('icons.email', [
-                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
-                ]),
-                'open' => $this->render('icons.chevron-down', [
-                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
-                ]),
-                'search' => $this->render('icons.search', [
-                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
-                ]),
-                'user' => $this->render('icons.user', [
-                    'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
-                ]),
-            ],
-        ], $config, [
-            'userId' => self::userId(),
-            'echoChannel' => self::echoChannel($config),
-            'echoEventName' => self::echoEventName($config),
-        ]);
     }
 
-    protected function echoChannel(array $config = []): string
+    public function echoChannel(): string
     {
-        $echoChannelConfig = data_get($config, 'echoChannel');
+        $echoChannelConfig = data_get($this->config(), 'echoChannel');
 
         if (is_callable($echoChannelConfig)) {
             return $echoChannelConfig($this->userId());
@@ -64,9 +31,9 @@ class BotManWebWidgetConfigurator implements BotManWebWidgetConfiguratorContract
         }
     }
 
-    protected function echoEventName(array $config = []): string
+    public function echoEventName(): string
     {
-        return basename(data_get($config, 'echoEventClass'));
+        return basename(data_get($this->config(), 'echoEventClass'));
     }
 
     public function userId(): string
@@ -98,8 +65,50 @@ class BotManWebWidgetConfigurator implements BotManWebWidgetConfiguratorContract
         return $this->view($view, $data, $mergeData)->render();
     }
 
+    public function getClientConfig(array $config = []): array
+    {
+        return array_merge($this->config(), [
+            'userId' => self::userId(),
+            'echoChannel' => self::echoChannel(),
+            'echoEventName' => self::echoEventName(),
+        ], $config);
+    }
+
     public function config($name = null, $value = null): mixed
     {
+        if (empty($this->config)) {
+            $config = config('botman-web-widget');
+
+            $this->config = array_merge([
+                'icons' => [
+                    'back' => $this->render('icons.arrow-left', [
+                        'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                    ]),
+                    'bot' => $this->render('icons.bot', [
+                        'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                    ]),
+                    'close' => $this->render('icons.close', [
+                        'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                    ]),
+                    'closed' => $this->render('icons.comment', [
+                        'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                    ]),
+                    'email' => $this->render('icons.email', [
+                        'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                    ]),
+                    'open' => $this->render('icons.chevron-down', [
+                        'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                    ]),
+                    'search' => $this->render('icons.search', [
+                        'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                    ]),
+                    'user' => $this->render('icons.user', [
+                        'stroke' => data_get($config, 'beaconLabelColor', '#ffffff'),
+                    ]),
+                ],
+            ], $config);
+        }
+
         if (!empty($name)) {
             if (is_array($name)) {
                 $this->config = array_merge($this->config, $name);
@@ -109,6 +118,7 @@ class BotManWebWidgetConfigurator implements BotManWebWidgetConfiguratorContract
             }
             return data_get($this->config, $name);
         }
+
         return $this->config;
     }
 

@@ -1,4 +1,3 @@
-build
 vendor
 tests/temp
 node_modules

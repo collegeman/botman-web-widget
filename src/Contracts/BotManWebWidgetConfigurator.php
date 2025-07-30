@@ -33,6 +33,12 @@ interface BotManWebWidgetConfigurator
      */
     public function config($name = null, $value = null): mixed;
 
+
+    /**
+     * @return array The configuration array for the widget.
+     */
+    public function getClientConfig(): array;
+
     /**
      * Render the embeddable widget view.
      *
@@ -47,5 +53,15 @@ interface BotManWebWidgetConfigurator
      * @return string
      */
     public function asset($path): string;
+
+    /**
+     * @return string The name of the echo channel for Botman messages
+     */
+    public function echoChannel(): string;
+
+    /**
+     * @return string The classname for for Botman message events
+     */
+    public function echoEventName(): string;
 
 }

@@ -9,7 +9,7 @@
 <body class="relative flex flex-col p-0">
     <div id="chat" v-cloak></div>
     <script>
-        window.botmanWidget = @json(array_merge(BotManWebWidget::config(), $config))
+        window.botmanWidget = @json(array_merge(BotManWebWidget::getClientConfig($config)))
     </script>
     <script type="module" src="{{ BotManWebWidget::asset('resources/js/chat.js') }}"></script>
 </body>
