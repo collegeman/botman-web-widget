@@ -24,11 +24,7 @@ class BotManWebWidgetConfigurator implements BotManWebWidgetConfiguratorContract
     {
         $echoChannelConfig = data_get($this->config(), 'echoChannel');
 
-        if (is_callable($echoChannelConfig)) {
-            return $echoChannelConfig($this->userId());
-        } else {
-            return $echoChannelConfig;
-        }
+        return str_replace('$userId', $this->userId(), $echoChannelConfig);
     }
 
     public function echoEventName(): string

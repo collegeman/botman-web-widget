@@ -86,7 +86,7 @@ return [
     'useEcho' => false,
 
     // The channel to listen for BotManMessageCreated events on
-    'echoChannel' => fn (string $userId) => "botman.messages.{$userId}",
+    'echoChannel' => 'botman.messages.$userId',
 
     // Laravel Echo configuration @see https://laravel.com/docs/11.x/broadcasting
     'echoConfiguration' => [],
