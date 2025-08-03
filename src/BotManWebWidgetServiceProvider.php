@@ -2,6 +2,7 @@
 
 namespace Collegeman\BotManWebWidget;
 
+use Collegeman\BotManWebWidget\Console\Commands\ChatCommand;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Collegeman\BotManWebWidget\Contracts\BotManWebWidgetConfigurator as BotManWebWidgetConfiguratorContract;
@@ -40,7 +41,9 @@ class BotManWebWidgetServiceProvider extends ServiceProvider
             ], 'botman-web-widget-lang');*/
 
             // Registering package commands.
-            // $this->commands([]);
+            $this->commands([
+                ChatCommand::class,
+            ]);
         }
     }
 
