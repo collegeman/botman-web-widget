@@ -6,6 +6,7 @@ use BotMan\BotMan\Messages\Conversations\Conversation;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use LLPhant\Chat\ChatInterface;
+use LLPhant\Chat\Enums\OpenAIChatModel;
 use LLPhant\Chat\FunctionInfo\FunctionInfo;
 use LLPhant\Chat\FunctionInfo\Parameter;
 use LLPhant\Chat\Message;
@@ -13,10 +14,13 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use Illuminate\Support\Facades\Log;
 use League\CommonMark\CommonMarkConverter;
+use LLPhant\Chat\OpenAIChat;
+use LLPhant\OpenAIConfig;
+use Psr\Log\LoggerInterface;
 
-class ConversationAI extends Conversation
+class ChatConversation extends Conversation
 {
-    protected ChatInterface | string $chat;
+    private ChatInterface $chat;
 
     protected Collection $messages;
 
@@ -24,21 +28,30 @@ class ConversationAI extends Conversation
 
     protected bool $convertMarkdownToHtml = false;
 
-    /**
-     * @param ChatInterface | string $chat Container alias/name for an instance of ChatInterface
-     */
-    public function __construct(string $chat, string $prompt)
+    public final function __construct()
     {
-        $this->chat = $chat;
         $this->messages = collect([]);
         $this->tools = collect([]);
         $this->system('You are a helpful assistant. You strive for brevity and clarity.');
-
-        if (!empty($prompt)) {
-            $this->user($prompt);
-        }
     }
 
+    /**
+     * Reset the message and tools in this conversation.
+     * @return $this
+     */
+    public function reset(): self
+    {
+        $this->messages = collect([]);
+        $this->tools = collect([]);
+
+        return $this;
+    }
+
+    /**
+     * Set the system message for this conversation.
+     * @param string $content
+     * @return $this
+     */
     public function system(string $content): self
     {
         $this->messages = $this->messages->filter(function ($message) {
@@ -54,6 +67,11 @@ class ConversationAI extends Conversation
         return $this;
     }
 
+    /**
+     * Append a user message to this conversation.
+     * @param string $content
+     * @return $this
+     */
     public function user(string $content): self
     {
         $this->messages->push(Message::user($content));
@@ -61,6 +79,11 @@ class ConversationAI extends Conversation
         return $this;
     }
 
+    /**
+     * Append an assistant message to this conversation.
+     * @param string $content
+     * @return $this
+     */
     public function assistant(string $content): self
     {
         $this->messages->push(Message::assistant($content));
@@ -78,7 +101,7 @@ class ConversationAI extends Conversation
     public function withCrawler(): self
     {
         $crawler = new FunctionInfo(
-            'crawl',
+            'getContentsFromUrl',
             $this,
             'If the user provides a URL, you can use this function get get the contents of the URL.',
             [new Parameter('url', 'string', 'The URL to crawl')]
@@ -91,7 +114,7 @@ class ConversationAI extends Conversation
         return $this->withTool($crawler);
     }
 
-    public function crawl(string $url): string
+    public function getContentsFromUrl(string $url): string
     {
         return Http::get($url)->body();
     }
@@ -101,9 +124,9 @@ class ConversationAI extends Conversation
         return $message->getText() === 'stop conversation';
     }
 
-    public function loop($response)
+    protected function handleChatResponse(string $response): void
     {
-//        Log::info($response);
+        $this->log($response);
 
         $this->assistant($response);
 
@@ -115,13 +138,41 @@ class ConversationAI extends Conversation
         }
 
         $this->ask($response, function (Answer $answer) {
-            dump($answer);
+            $this->log($answer);
             $this->user($answer->getText());
-            $this->loop($this->chat());
+            $this->handleChatResponse($this->generateChatResponse());
         });
     }
 
-    public function chat()
+    public function log($something): void
+    {
+        $this->logger()->info($something);
+    }
+
+    public function logger(): LoggerInterface
+    {
+        return Log::channel(null);
+    }
+
+    /**
+     * @param bool $rebuild
+     * @return ChatInterface
+     * @throws \LLPhant\Exception\MissingParameterException
+     */
+    public function chat(bool $rebuild = false): ChatInterface
+    {
+        if (empty($this->chat) || $rebuild) {
+            $config = new OpenAIConfig();
+            $config->apiKey = env('OPENAI_API_KEY');
+            $config->model = OpenAIChatModel::Gpt4Omni->value;
+            $this->chat = new OpenAIChat($config);
+
+            $this->tools->each(fn (FunctionInfo $tool) => $this->chat->addTool($tool));
+        }
+        return $this->chat;
+    }
+
+    protected function generateChatResponse(): string
     {
         $messages = collect($this->messages)->map(function ($message) {
             if ($message instanceof Message) {
@@ -136,22 +187,12 @@ class ConversationAI extends Conversation
             };
         })->toArray();
 
-        $chat = $this->chat;
-
-        if (!$chat instanceof ChatInterface) {
-            if (!$chat = app($chat)) {
-                throw new \Exception("LLPhant ChatInterface instance [{$this->chat}] not found in container");
-            }
-        }
-
-        $this->tools->each(fn (FunctionInfo $tool) => $chat->addTool($tool));
-
-        return $chat->generateChat($messages);
+        return $this->chat()->generateChat($messages);
     }
 
     public function run()
     {
-        $this->loop($this->chat());
+        $this->handleChatResponse($this->generateChatResponse());
     }
 
     public function convertMarkdownToHtml(bool $convertMarkdownToHtml): self

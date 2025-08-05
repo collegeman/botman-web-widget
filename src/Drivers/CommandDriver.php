@@ -4,15 +4,12 @@ namespace Collegeman\BotManWebWidget\Drivers;
 
 use BotMan\BotMan\Drivers\HttpDriver;
 use BotMan\BotMan\Http\Curl;
-use BotMan\BotMan\Interfaces\DriverInterface;
-use BotMan\BotMan\Interfaces\UserInterface;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Incoming\IncomingMessage;
 use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class CommandDriver extends HttpDriver
 {
